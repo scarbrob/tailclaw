@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.npm-global/bin/openclaw gateway start
+WorkingDirectory=%h/.openclaw
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=default.target

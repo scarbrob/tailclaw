@@ -1,0 +1,91 @@
+{
+  "gateway": {
+    "mode": "local",
+    "bind": "loopback",
+    "port": ${OPENCLAW_GATEWAY_PORT},
+    "auth": {
+      "mode": "token",
+      "token": "${OPENCLAW_GATEWAY_TOKEN}"
+    },
+    "tailscale": {
+      "mode": "off"
+    },
+    "controlUi": {
+      "enabled": true
+    }
+  },
+  "discovery": {
+    "mdns": {
+      "mode": "off"
+    }
+  },
+  "session": {
+    "dmScope": "main"
+  },
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "token": { "$env": "DISCORD_BOT_TOKEN" },
+      "configWrites": false,
+      "dmPolicy": "allowlist",
+      "dm": {
+        "allowFrom": [${DISCORD_DM_ALLOW_USER_IDS}]
+      },
+      "guilds": {
+        "${DISCORD_GUILD_ID}": {
+          "enabled": true,
+          "groupPolicy": "allowlist",
+          "requireMention": true,
+          "allowedRoles": ["${DISCORD_ROLE_ID}"]
+        }
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "${GITHUB_COPILOT_DEFAULT_MODEL}"
+      },
+      "systemPromptOverride": "${OPENCLAW_PERSONALITY}",
+      "models": {
+        "github-copilot/gpt-4o": { "contextWindow": 128000 },
+        "github-copilot/gpt-4o-mini": { "contextWindow": 128000 },
+        "github-copilot/gpt-4.1": { "contextWindow": 1047576 },
+        "github-copilot/gpt-4.1-mini": { "contextWindow": 1047576 },
+        "github-copilot/gpt-4.1-nano": { "contextWindow": 1047576 },
+        "github-copilot/o1": { "contextWindow": 200000 },
+        "github-copilot/o1-mini": { "contextWindow": 128000 },
+        "github-copilot/o1-preview": { "contextWindow": 128000 },
+        "github-copilot/o3": { "contextWindow": 200000 },
+        "github-copilot/o3-mini": { "contextWindow": 200000 },
+        "github-copilot/o4-mini": { "contextWindow": 200000 },
+        "github-copilot/claude-3.5-sonnet": { "contextWindow": 200000 },
+        "github-copilot/claude-3.7-sonnet": { "contextWindow": 200000 },
+        "github-copilot/claude-sonnet-4": { "contextWindow": 200000 },
+        "github-copilot/claude-opus-4": { "contextWindow": 200000 },
+        "github-copilot/claude-opus-4.6": { "contextWindow": 977000 },
+        "github-copilot/claude-sonnet-4.6": { "contextWindow": 200000 },
+        "github-copilot/claude-haiku-3.5": { "contextWindow": 200000 },
+        "github-copilot/gemini-2.0-flash-001": { "contextWindow": 1048576 },
+        "github-copilot/gemini-2.5-flash": { "contextWindow": 1048576 },
+        "github-copilot/gemini-2.5-pro": { "contextWindow": 1048576 },
+        "github-copilot/Llama-3.3-70B-Instruct": { "contextWindow": 128000 },
+        "github-copilot/Mistral-Large-2411": { "contextWindow": 128000 },
+        "github-copilot/codestral-2501": { "contextWindow": 256000 }
+      }
+    }
+  },
+  "tools": {
+    "profile": "coding",
+    "deny": ["gateway"],
+    "fs": {
+      "workspaceOnly": false
+    },
+    "exec": {
+      "security": "full"
+    },
+    "elevated": {
+      "enabled": false
+    }
+  }
+}

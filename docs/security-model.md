@@ -23,6 +23,7 @@ Security patches are installed automatically via `unattended-upgrades`, but the 
 - `Unattended-Upgrade::Automatic-Reboot` is set to `false`
 - `needrestart` is set to list-only mode (`'l'`) — it logs what needs restarting but doesn't act
 - A daily reboot cron (configurable, default 2:30 AM PST) applies pending kernel updates and service restarts in a predictable window
+- A 4 GB swap file prevents OOM crashes under memory pressure (`vm.swappiness=10` — only used when needed)
 - OpenClaw auto-starts after reboot via systemd + linger, so the bot comes back online within seconds
 
 This avoids surprise outages mid-conversation while keeping the system patched.

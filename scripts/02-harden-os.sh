@@ -75,11 +75,23 @@ EOF
 systemctl restart systemd-journald
 
 # Daily reboot cron — pending kernel updates and service restarts take effect here
-echo "[7/7] Setting up daily reboot cron..."
+echo "[7/8] Setting up daily reboot cron..."
 REBOOT_HOUR="${DAILY_REBOOT_UTC:0:2}"
 REBOOT_MIN="${DAILY_REBOOT_UTC:2:2}"
 echo "${REBOOT_MIN} ${REBOOT_HOUR} * * * root /sbin/shutdown -r now" > /etc/cron.d/daily-reboot
 chmod 644 /etc/cron.d/daily-reboot
+
+# Swap file — prevents OOM crashes under memory pressure
+echo "[8/8] Creating swap file..."
+if [ ! -f /swapfile ]; then
+  fallocate -l 4G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+echo 'vm.swappiness=10' > /etc/sysctl.d/99-swap.conf
+sysctl -p /etc/sysctl.d/99-swap.conf
 
 echo "=== OS hardening complete ==="
 REMOTE_SCRIPT

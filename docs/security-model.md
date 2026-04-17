@@ -16,6 +16,17 @@ tailclaw deploys OpenClaw with 9 layers of defense-in-depth. No single layer is 
 | 8 | **Tool restrictions** | Prompt injection escalation. `gateway` tool denied, elevated access disabled. |
 | 9 | **File permissions (700/600)** | Local privilege escalation. Config and secrets readable only by owner. |
 
+## Update strategy
+
+Security patches are installed automatically via `unattended-upgrades`, but the VM **never reboots or restarts services on its own**:
+
+- `Unattended-Upgrade::Automatic-Reboot` is set to `false`
+- `needrestart` is set to list-only mode (`'l'`) — it logs what needs restarting but doesn't act
+- A daily reboot cron (configurable, default 2:30 AM PST) applies pending kernel updates and service restarts in a predictable window
+- OpenClaw auto-starts after reboot via systemd + linger, so the bot comes back online within seconds
+
+This avoids surprise outages mid-conversation while keeping the system patched.
+
 ## Why these specific settings
 
 ### `gateway.bind: loopback` (not `tailnet`)

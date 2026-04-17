@@ -4,8 +4,9 @@ Deploy a hardened [OpenClaw](https://openclaw.ai/) instance on Azure, accessible
 
 ## Features
 
-- **Azure VM** — no public IP, deny-all-inbound NSG, auto-shutdown
+- **Azure VM** — no public IP, deny-all-inbound NSG
 - **OS hardening** — UFW, fail2ban, key-only SSH, unattended security patches
+- **Update strategy** — patches install automatically, restarts only during daily reboot window
 - **Tailscale** — WireGuard mesh VPN for all access (SSH + Control UI)
 - **OpenClaw** — gateway on loopback with token auth, mDNS disabled
 - **Discord** — bot with guild/role allowlists and DM policies
@@ -51,6 +52,7 @@ Azure VM
         ├── Discord bot (allowlisted guilds/roles)
         ├── AI models (configurable provider)
         ├── systemd (auto-restart on failure)
+        ├── Daily reboot cron (applies pending updates)
         ├── Health check cron (every 5 min)
         └── Backup cron (daily, 14-day retention)
 ```

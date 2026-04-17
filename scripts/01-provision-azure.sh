@@ -57,7 +57,7 @@ az network vnet subnet update \
   --output none
 
 # Create VM — NO public IP
-echo "[5/6] Creating VM ${AZURE_VM_NAME} (${AZURE_VM_SIZE}, Ubuntu 24.04, no public IP)..."
+echo "[5/5] Creating VM ${AZURE_VM_NAME} (${AZURE_VM_SIZE}, Ubuntu 24.04, no public IP)..."
 az vm create \
   --resource-group "$AZURE_RESOURCE_GROUP" \
   --name "$AZURE_VM_NAME" \
@@ -71,14 +71,6 @@ az vm create \
   --nsg "" \
   --os-disk-size-gb 30 \
   --storage-sku StandardSSD_LRS \
-  --output none
-
-# Auto-shutdown
-echo "[6/6] Setting auto-shutdown at ${AZURE_AUTO_SHUTDOWN_TIME} UTC..."
-az vm auto-shutdown \
-  --resource-group "$AZURE_RESOURCE_GROUP" \
-  --name "$AZURE_VM_NAME" \
-  --time "$AZURE_AUTO_SHUTDOWN_TIME" \
   --output none
 
 echo "=== Azure provisioning complete ==="

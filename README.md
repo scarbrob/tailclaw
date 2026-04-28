@@ -12,6 +12,7 @@ Deploy a hardened [OpenClaw](https://openclaw.ai/) instance on Azure, accessible
 - **Discord** — bot with guild/role allowlists and DM policies
 - **Models** — configurable AI provider (GitHub Copilot, Anthropic, OpenAI, etc.)
 - **Reliability** — systemd auto-start, health checks (5 min), daily backups, log rotation
+- **UX** — clear error messages on failure, no silent crashes; every step reports what went wrong and where
 
 ## Prerequisites
 
@@ -40,21 +41,23 @@ The orchestrator provisions the VM, hardens the OS, installs Tailscale, sets up 
 ## Architecture
 
 ```
-Your device
-  │
-  │  Tailscale (WireGuard)
-  │
-Azure VM
-  ├── NSG: deny-all-inbound, no public IP
-  ├── UFW: tailscale0 interface only
-  ├── fail2ban + key-only SSH
-  └── OpenClaw Gateway (127.0.0.1:18789)
-        ├── Discord bot (allowlisted guilds/roles)
-        ├── AI models (configurable provider)
-        ├── systemd (auto-restart on failure)
-        ├── Daily reboot cron (applies pending updates)
-        ├── Health check cron (every 5 min)
-        └── Backup cron (daily, 14-day retention)
+Your device                          Deploy pipeline
+  │                                    │
+  │  Tailscale (WireGuard)             ├─ 01 Provision Azure (VM, VNET, NSG)
+  │                                    ├─ 02 Harden OS (UFW, fail2ban, patches)
+  ▼                                    ├─ 03 Install Tailscale (mesh VPN)
+Azure VM (no public IP)                ├─ 04 Install OpenClaw (Node.js + npm)
+  ├── NSG: deny-all-inbound            ├─ 05 Configure OpenClaw (token, config)
+  ├── UFW: tailscale0 only             ├─ 06 Discord setup (bot channel)
+  ├── fail2ban + key-only SSH          ├─ 07 systemd service (auto-start)
+  ├── 4GB swap (OOM protection)        ├─ 08 Monitoring (cron, backup, logrotate)
+  └── OpenClaw Gateway (loopback)      └─ 09 GitHub Copilot auth (optional)
+        ├── Discord bot (guild/role ACL)
+        ├── AI models (configurable)
+        ├── systemd (auto-restart)
+        ├── Daily reboot (update window)
+        ├── Health check (every 5 min)
+        └── Backup (daily, 14-day retention)
 ```
 
 ## Post-deployment

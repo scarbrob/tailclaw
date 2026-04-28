@@ -8,8 +8,9 @@ VM="${AZURE_ADMIN_USER}@${AZURE_VM_NAME}"
 
 echo "=== Setting up Discord ==="
 
-ssh "$VM" bash << REMOTE
+ssh "$VM" bash << REMOTE || { echo ""; echo "ERROR: Discord setup failed. Check output above."; exit 1; }
 set -euo pipefail
+trap 'echo ""; echo "ERROR: Discord setup failed at step (line \$LINENO)"; exit 1' ERR
 export PATH="\$HOME/.npm-global/bin:\$PATH"
 source ~/.openclaw/.env
 

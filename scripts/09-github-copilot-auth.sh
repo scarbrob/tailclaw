@@ -13,10 +13,17 @@ echo "and enter a code to authorize GitHub Copilot access."
 echo ""
 
 ssh -t "$VM" bash << 'REMOTE'
+set -euo pipefail
 export PATH="$HOME/.npm-global/bin:$PATH"
 
 echo "Starting GitHub Copilot device flow..."
-openclaw models auth login-github-copilot
+if ! openclaw models auth login-github-copilot; then
+  echo ""
+  echo "ERROR: GitHub Copilot authentication failed."
+  echo "You can retry later: ssh into the VM and run:"
+  echo "  openclaw models auth login-github-copilot"
+  exit 1
+fi
 
 echo ""
 echo "Verifying model access..."

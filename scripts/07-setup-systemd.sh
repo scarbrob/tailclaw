@@ -14,8 +14,9 @@ scp "$TEMPLATE_DIR/openclaw-gateway.service" "$VM:~/openclaw-gateway.service"
 scp "$TEMPLATE_DIR/env.conf.tmpl" "$VM:~/env.conf"
 scp "$TEMPLATE_DIR/watchdog.conf" "$VM:~/watchdog.conf"
 
-ssh "$VM" bash << 'REMOTE'
+ssh "$VM" bash << 'REMOTE' || { echo ""; echo "ERROR: systemd setup failed. Check output above."; exit 1; }
 set -euo pipefail
+trap 'echo ""; echo "ERROR: systemd setup failed at step (line $LINENO)"; exit 1' ERR
 
 # Install service
 echo "[2/4] Installing systemd service..."

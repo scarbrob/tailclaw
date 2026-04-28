@@ -5,6 +5,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/config.env"
 
+# Global error handler — never dump user to shell silently
+trap 'echo ""; echo "========================================"; echo "  DEPLOYMENT FAILED"; echo "  Failed at line $LINENO of deploy.sh"; echo "  Review the output above for details."; echo "========================================"' ERR
+
 # ─── Preflight ───────────────────────────────────────────────────────────────
 
 echo "=========================================="
@@ -79,6 +82,10 @@ echo ""
 echo ">>> Phase 2: OS Hardening"
 HARDEN_SCRIPT=$(sed -n '/^cat << '\''REMOTE_SCRIPT'\''$/,/^REMOTE_SCRIPT$/p' \
   "$SCRIPT_DIR/scripts/02-harden-os.sh" | sed '1d;$d')
+
+# Inject config values that the single-quoted heredoc can't expand
+HARDEN_SCRIPT="${HARDEN_SCRIPT//\$\{DAILY_REBOOT_UTC:0:2\}/${DAILY_REBOOT_UTC:0:2}}"
+HARDEN_SCRIPT="${HARDEN_SCRIPT//\$\{DAILY_REBOOT_UTC:2:2\}/${DAILY_REBOOT_UTC:2:2}}"
 
 az vm run-command invoke \
   --resource-group "$AZURE_RESOURCE_GROUP" \

@@ -11,14 +11,14 @@ NSG_NAME="nsg-${AZURE_VM_NAME}"
 echo "=== Provisioning Azure Infrastructure ==="
 
 # Resource group
-echo "[1/6] Creating resource group ${AZURE_RESOURCE_GROUP} in ${AZURE_LOCATION}..."
+echo "[1/5] Creating resource group ${AZURE_RESOURCE_GROUP} in ${AZURE_LOCATION}..."
 az group create \
   --name "$AZURE_RESOURCE_GROUP" \
   --location "$AZURE_LOCATION" \
   --output none
 
 # Virtual network
-echo "[2/6] Creating VNET..."
+echo "[2/5] Creating VNET..."
 az network vnet create \
   --resource-group "$AZURE_RESOURCE_GROUP" \
   --name "$VNET_NAME" \
@@ -28,7 +28,7 @@ az network vnet create \
   --output none
 
 # Network security group — deny ALL inbound
-echo "[3/6] Creating NSG (deny-all-inbound)..."
+echo "[3/5] Creating NSG (deny-all-inbound)..."
 az network nsg create \
   --resource-group "$AZURE_RESOURCE_GROUP" \
   --name "$NSG_NAME" \
@@ -48,7 +48,7 @@ az network nsg rule create \
   --output none
 
 # Associate NSG with subnet
-echo "[4/6] Associating NSG with subnet..."
+echo "[4/5] Associating NSG with subnet..."
 az network vnet subnet update \
   --resource-group "$AZURE_RESOURCE_GROUP" \
   --vnet-name "$VNET_NAME" \

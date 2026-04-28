@@ -23,8 +23,9 @@ export GITHUB_COPILOT_DEFAULT_MODEL
 
 RENDERED=$(envsubst < "$TEMPLATE_DIR/openclaw.json.tmpl")
 
-ssh "$VM" bash << REMOTE
+ssh "$VM" bash << REMOTE || { echo ""; echo "ERROR: OpenClaw configuration failed. Check output above."; exit 1; }
 set -euo pipefail
+trap 'echo ""; echo "ERROR: Configuration failed at step (line \$LINENO)"; exit 1' ERR
 
 # Write config
 cat > ~/.openclaw/openclaw.json << 'CONFIGEOF'

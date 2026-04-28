@@ -8,8 +8,9 @@ VM="${AZURE_ADMIN_USER}@${AZURE_VM_NAME}"
 
 echo "=== Installing OpenClaw ==="
 
-ssh "$VM" bash << 'REMOTE'
+ssh "$VM" bash << 'REMOTE' || { echo ""; echo "ERROR: OpenClaw installation failed. Check output above."; exit 1; }
 set -euo pipefail
+trap 'echo ""; echo "ERROR: Install failed at step (line $LINENO)"; exit 1' ERR
 
 # Node.js 24
 echo "[1/4] Installing Node.js 24..."
